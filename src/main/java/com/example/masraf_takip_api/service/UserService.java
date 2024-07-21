@@ -1,6 +1,5 @@
 package com.example.masraf_takip_api.service;
 
-
 import com.example.masraf_takip_api.dto.CreateUserRequest;
 import com.example.masraf_takip_api.model.User;
 import com.example.masraf_takip_api.repository.UserRepository;
@@ -11,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,7 +26,6 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElseThrow(EntityNotFoundException::new);
     }
@@ -36,7 +35,6 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(CreateUserRequest request) {
-
         User newUser = User.builder()
                 .name(request.name())
                 .username(request.username())
@@ -47,9 +45,36 @@ public class UserService implements UserDetailsService {
                 .isEnabled(true)
                 .accountNonLocked(true)
                 .build();
-
         return userRepository.save(newUser);
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, User userDetails) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setName(userDetails.getName());
+            user.setUsername(userDetails.getUsername());
+            user.setPassword(userDetails.getPassword());
+            // update other fields as needed
+            return userRepository.save(user);
+        } else {
+            return null;
+        }
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }
