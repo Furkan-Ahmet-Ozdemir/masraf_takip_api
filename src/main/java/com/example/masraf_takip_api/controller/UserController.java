@@ -45,13 +45,14 @@ public class UserController {
 
     @PostMapping("/generateToken")
     public String generateToken(@RequestBody AuthRequest request) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.username(), request.password()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(request.username());
+            return jwtService.generateToken(request.getUsername());
         }
-        log.info("invalid username " + request.username());
-        throw new UsernameNotFoundException("invalid username " + request.username());
+        log.info("invalid username " + request.getUsername());
+        throw new UsernameNotFoundException("invalid username " + request.getUsername());
     }
+
 
     @GetMapping("/user")
     public String getUserString() {
