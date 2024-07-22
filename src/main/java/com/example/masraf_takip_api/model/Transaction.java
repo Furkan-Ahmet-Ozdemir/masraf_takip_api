@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Data
 @Entity
 @Table(name = "transactions")
@@ -19,6 +21,7 @@ public class Transaction {
     private String name;
     private String description;
     private Long cost;
+    private LocalDate transactionDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
