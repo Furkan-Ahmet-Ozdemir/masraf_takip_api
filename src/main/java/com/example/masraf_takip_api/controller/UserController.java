@@ -3,10 +3,11 @@ package com.example.masraf_takip_api.controller;
 import com.example.masraf_takip_api.dto.AuthRequest;
 import com.example.masraf_takip_api.dto.CreateUserRequest;
 import com.example.masraf_takip_api.model.User;
+//import com.example.masraf_takip_api.service.JwtService;
 import com.example.masraf_takip_api.service.JwtService;
 import com.example.masraf_takip_api.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/auth")
 @Slf4j
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService service;
@@ -27,11 +29,6 @@ public class UserController {
 
     private final AuthenticationManager authenticationManager;
 
-    public UserController(UserService service, JwtService jwtService, AuthenticationManager authenticationManager) {
-        this.service = service;
-        this.jwtService = jwtService;
-        this.authenticationManager = authenticationManager;
-    }
 
     @GetMapping("/welcome")
     public String welcome() {
@@ -43,9 +40,13 @@ public class UserController {
         return service.createUser(request);
     }
 
-    @PostMapping("/generateToken")
+    @PostMapping("/generateTokens")
     public String generateToken(@RequestBody AuthRequest request) {
+        log.info("generateToken");
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+        authentication.setAuthenticated(true);
+
+        log.info("generateToken 2");
         if (authentication.isAuthenticated()) {
             return jwtService.generateToken(request.getUsername());
         }
@@ -64,35 +65,35 @@ public class UserController {
         return "This is ADMIN!";
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return service.getAllUsers();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<User> getUserById(@PathVariable Long id) {
-        Optional<User> user = service.getUserById(id);
-        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @PostMapping
-    public User createUser(@RequestBody User user) {
-        return service.createUser(user);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
-        User updatedUser = service.updateUser(id, userDetails);
-        if (updatedUser != null) {
-            return ResponseEntity.ok(updatedUser);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        service.deleteUser(id);
-        return ResponseEntity.noContent().build();
-    }
+//    @GetMapping
+//    public List<User> getAllUsers() {
+//        return service.getAllUsers();
+//    }
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+//        Optional<User> user = service.getUserById(id);
+//        return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+//
+//    @PostMapping
+//    public User createUser(@RequestBody User user) {
+//        return service.createUser(user);
+//    }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+//        User updatedUser = service.updateUser(id, userDetails);
+//        if (updatedUser != null) {
+//            return ResponseEntity.ok(updatedUser);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+//        service.deleteUser(id);
+//        return ResponseEntity.noContent().build();
+//    }
 }

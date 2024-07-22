@@ -1,6 +1,7 @@
 package com.example.masraf_takip_api.service;
 
 import com.example.masraf_takip_api.dto.CreateUserRequest;
+import com.example.masraf_takip_api.exception.UserNotFoundException;
 import com.example.masraf_takip_api.model.User;
 import com.example.masraf_takip_api.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -60,17 +61,17 @@ public class UserService implements UserDetailsService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User userDetails) {
+    public User updateUser(Long id, User userDetails) throws UserNotFoundException{
         Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setName(userDetails.getName());
             user.setUsername(userDetails.getUsername());
             user.setPassword(userDetails.getPassword());
-            // update other fields as needed
+
             return userRepository.save(user);
         } else {
-            return null;
+            throw new UserNotFoundException("Transaction not found for id: " + id);
         }
     }
 

@@ -1,9 +1,11 @@
 package com.example.masraf_takip_api.service;
+
 import com.example.masraf_takip_api.model.Transaction;
 import com.example.masraf_takip_api.repository.TransactionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,9 @@ public class TransactionService {
         }
     }
 
+    public List<Transaction> getTransactionsByDateRange(LocalDate startDate, LocalDate endDate) {
+        return transactionRepository.findByTransactionDateBetween(startDate, endDate);
+    }
     public void deleteTransaction(Long id) {
         transactionRepository.deleteById(id);
     }

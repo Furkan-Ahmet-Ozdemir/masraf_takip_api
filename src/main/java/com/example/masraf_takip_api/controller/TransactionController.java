@@ -3,6 +3,7 @@ package com.example.masraf_takip_api.controller;
 import com.example.masraf_takip_api.model.Transaction;
 import com.example.masraf_takip_api.service.TransactionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,6 +13,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/transactions")
 @RequiredArgsConstructor
+@Slf4j
 public class TransactionController {
 
 
@@ -35,6 +37,7 @@ public class TransactionController {
 
     @PostMapping
     public Transaction createTransaction(@RequestBody Transaction transaction) {
+        log.info("createTransaction");
         return transactionService.createTransaction(transaction);
     }
 
